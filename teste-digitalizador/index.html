@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure OCR Demo</title>
+</head>
+<body>
+    <h1>Upload de Imagem para OCR</h1>
+
+    <form id="uploadForm">
+        <label for="imageFile">Escolha uma imagem:</label>
+        <input type="file" id="imageFile" accept="image/*" required>
+        <button type="submit">Enviar para OCR</button>
+    </form>
+
+    <h2>Texto Extraído:</h2>
+    <p id="ocrResult"></p>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const imageFile = document.getElementById('imageFile').files[0];
+            const formData = new FormData();
+            formData.append('file', imageFile);
+
+            fetch('/api/ocr', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ocrResult').textContent = data.text;
+            })
+            .catch(error => console.error('Erro ao processar imagem:', error));
+        });
+    </script>
+</body>
+</html>
